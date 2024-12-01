@@ -1,3 +1,9 @@
+#AoC2024
+input.txt
+test.txt
+__dayTemplate/
+.DS_Store
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
