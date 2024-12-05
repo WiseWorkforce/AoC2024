@@ -1,3 +1,4 @@
+import time
 import sys
 import os
 current = os.path.dirname(os.path.realpath(__file__))
@@ -72,6 +73,8 @@ def reorder_pages(all_pages):
             i+= 1
     return all_pages
 
+start_time = time.time()
+
 correct_order = []
 for row in order:
     row = [int(x) for x in row]
@@ -84,6 +87,10 @@ for c in correct_order:
     m = get_middle(c)
     pt1 += m
 print ("The outcome of part one is: " + str(pt1))
+runtime = (time.time() - start_time)*1000
+print("Runtime (ms): " +str(runtime))
+
+start_time = time.time()
 
 # Change all values to ints
 order = [[int(y) for y in x] for x in order]
@@ -105,3 +112,5 @@ for c in reordered:
     m = get_middle(c)
     pt2 += m
 print ("The outcome of part two is: " + str(pt2))
+runtime = (time.time() - start_time)*1000
+print("Runtime (ms): " +str(runtime))
