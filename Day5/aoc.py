@@ -29,15 +29,19 @@ def get_correct_pages(all_pages):
     i = 0
     while i < len(all_pages):
         pages_done = all_pages[:i]
-        current_page = int(all_pages[i])
-        # Get the pages for the pages which needs to be printed before the active one
-        idx_before = [x for x in range(len(rules_second)) if rules_second[x] == current_page]
-        must_be_printed_before = [rules_first[x] for x in idx_before]
+        pages_to_do = all_pages[i+1:]
+        current_page = all_pages[i]
+        rules_before = sorted([rules[x][0] for x in range(len(rules_second)) if rules_second[x] == current_page])
+        rules_after = sorted([rules[x][1] for x in range(len(rules_first)) if rules_first[x] == current_page])
+        for page_to_do in pages_to_do:
+            if page_to_do in rules_before:
+                return False
         for page_done in pages_done:
-            if page_done not in must_be_printed_before:
+            if page_done in rules_after:
                 return False
         i += 1
     return all_pages
+    
 
 def reorder_pages(all_pages):
     i = 0
@@ -81,14 +85,13 @@ for row in order:
     correct = get_correct_pages(row)
     if correct:
         correct_order.append(correct)
-
 pt1 = 0
 for c in correct_order:
     m = get_middle(c)
     pt1 += m
 print ("The outcome of part one is: " + str(pt1))
 runtime = (time.time() - start_time)*1000
-print("Runtime (ms): " +str(runtime))
+print("Runtime part one (ms): " +str(runtime))
 
 start_time = time.time()
 
@@ -113,4 +116,4 @@ for c in reordered:
     pt2 += m
 print ("The outcome of part two is: " + str(pt2))
 runtime = (time.time() - start_time)*1000
-print("Runtime (ms): " +str(runtime))
+print("Runtime part two (ms): " +str(runtime))
