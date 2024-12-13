@@ -7,9 +7,24 @@ def getInput(folder):
     return_lst.append(input_to_list(file_to_open))
     return return_lst
 
+def getInput2(folder):
+    return_lst = []
+    file_to_open = folder + '/test.txt'
+    return_lst.append(input_to_list2(file_to_open))
+    file_to_open = folder + '/input.txt'
+    return_lst.append(input_to_list2(file_to_open))
+    return return_lst
+
 def input_to_list(file_to_open):
     file = open(file_to_open, "r")
     data = list(csv.reader(file))
+    file.close()
+    return data
+
+def input_to_list2(file_to_open):
+    file = open(file_to_open, "r")
+    data = csv.reader(file)
+    data = [x[0] for x in data]
     file.close()
     return data
 
