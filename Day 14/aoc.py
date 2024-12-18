@@ -33,9 +33,8 @@ def make_grid(w, h):
         grid.append(row)
     return grid
 
-def step(pos,vel,grid):
+def step(pos,vel,grid, num_steps):
     h, w = (len(grid), len(grid[0]))
-    steps = 100
     for i, p in enumerate(pos):
         j = 0
         # initial position
@@ -44,7 +43,7 @@ def step(pos,vel,grid):
         v = vel[i]
         cur_pos = [p[0], p[1]]
         grid[p[1]][p[0]] += 1
-        while j < steps:
+        while j < num_steps:
             x = cur_pos[0] + v[0]
             y = cur_pos[1] + v[1]
             if y < 0:
@@ -60,7 +59,32 @@ def step(pos,vel,grid):
             cur_pos = [x,y]
             j += 1
     return grid
-    
+
+def one_step(pos, vel, grid, prev_pos):
+    h, w = (len(grid), len(grid[0]))
+    for i, p in enumerate(pos):
+        p = pos[i]
+        v = vel[i]
+        cur_x, cur_y = p
+        if len(prev_pos[i]) > 0: # When there was a step before, remove that one first
+            grid[prev_pos[i][1]][prev_pos[i][0]] -= 1
+        # Place the robot on the positions asked
+        grid[cur_y][cur_x] +=1    
+        prev_pos[i] = [cur_x, cur_y]
+        x = cur_x + v[0]
+        y = cur_y + v[1]
+        if y < 0:
+            y = h + y
+        if y >= h:
+            y = y - h
+        if x < 0:
+            x = w + x
+        if x >= w:
+            x = x - w
+        pos[i] = [x,y]
+    return pos, vel, grid, prev_pos
+
+
 def split_quadrants(grid):
     h, w = (len(grid), len(grid[0]))
     m_h = int(h / 2)
@@ -85,6 +109,9 @@ def multiply(lst):
         res *= l
     return res
 
+
+
+
 def partone(input):
     w = 101
     h = 103
@@ -93,7 +120,7 @@ def partone(input):
     p = get_positions(input)
     v = get_velocities(input)
     grid = make_grid(w,h)
-    grid = step(p,v,grid)
+    grid = step(p,v,grid, 100)
     q = split_quadrants(grid)
     s_q = []
     for q in q:
@@ -107,5 +134,35 @@ def partone(input):
 input = input_real
 #input = input_test
 
-
+def parttwo(input):
+    w = 101
+    h = 103
+    #w = 11
+    #h = 7
+    p = get_positions(input)
+    v = get_velocities(input)
+    grid = make_grid(w,h)
+    steps = 10000000000
+    prev_pos = []
+    for i in p:
+        prev_pos.append([])
+    i = 0
+    while i < steps:
+        p,v,grid,prev_pos = one_step(p,v,grid, prev_pos)
+        unique_rows = 0
+        for r in grid:
+            t = [str(x) for x in r]
+            row_str = ''.join(t).replace("0"," ")
+            unique_chars = set(t)
+            if len(unique_chars) > 2:
+                break
+            unique_rows += 1
+        if unique_rows == h:
+            for r in grid:
+                t = [str(x) for x in r]
+                print(''.join(t).replace("0"," "))
+            print(i)
+            break
+        i += 1
 partone(input)
+parttwo(input)
